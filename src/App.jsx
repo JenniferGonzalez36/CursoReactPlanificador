@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
+import Filtros from './components/Filtros';
 import ListadoGastos from './components/ListadoGastos';
 import Modal from './components/Modal';
 import { generateId } from './helpers';
@@ -20,6 +21,9 @@ function App() {
     );
   const [editSpend, setEditSpend] = useState({});
 
+  const [filter, setFilter] = useState("");
+  const [filteredSpends, setFilteredSpends] = useState([]);
+
   useEffect(() => {
     if(Object.keys(editSpend).length > 0){
       setModal(true);
@@ -37,6 +41,14 @@ function App() {
   useEffect(() => {
     localStorage.setItem('spends', JSON.stringify(spends) ?? []);
   }, [spends]);
+
+  useEffect(() => {
+    if(filter){
+      const newFilteredSpends = spends.filter(spend => spend.category === filter);
+      
+      setFilteredSpends(newFilteredSpends);
+    }
+  }, [filter]);
 
   useEffect(() => {
     const budgetLS = Number(localStorage.getItem('budget')) ?? 0;
@@ -85,10 +97,13 @@ function App() {
       {isValidBudget && (
         <>
           <main>
+            <Filtros filter={filter} setFilter={setFilter}/>
             <ListadoGastos 
               spends={spends} 
               setEditSpend={setEditSpend}
               deleteSpend={deleteSpend}
+              filter={filter}
+              filteredSpends={filteredSpends}
             />
           </main>
           <div className="nuevo-gasto">
