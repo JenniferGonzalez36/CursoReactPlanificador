@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import ListadoGastos from './components/ListadoGastos';
 import Modal from './components/Modal';
@@ -14,9 +14,21 @@ function App() {
   const [modalAnimation, setModalAnimation] = useState(false);
 
   const [spends, setSpends] = useState([]);
+  const [editSpend, setEditSpend] = useState({});
+
+  useEffect(() => {
+    if(Object.keys(editSpend).length > 0){
+      setModal(true);
+    
+      setTimeout(() => {
+        setModalAnimation(true);
+      }, 300);
+    }
+  }, [editSpend]);
 
   const handleNewSpend = () => {
     setModal(true);
+    setEditSpend({});
 
     setTimeout(() => {
       setModalAnimation(true);
@@ -24,14 +36,25 @@ function App() {
   }
 
   const saveSpend = spend => {
-    spend.id = generateId();
-    spend.date = Date.now();
-    setSpends([...spends, spend]);
-
+    if(spend.id){
+      const updatedSpends = spends.map(spendState => spendState.id === spend.id ? spend : spendState);
+      setSpends(updatedSpends);
+      setEditSpend({});
+    } else {
+      spend.id = generateId();
+      spend.date = Date.now();
+      setSpends([...spends, spend]);
+    }
     setModalAnimation(false);
     setTimeout(() => {
       setModal(false)
     }, 300);
+  }
+
+  const deleteSpend = id => {
+    const updatedSpends = spends.filter(spend => spend.id !== id);
+
+    setSpends(updatedSpends);
   }
 
   return (
@@ -39,11 +62,16 @@ function App() {
       <Header 
         budget={budget} setBudget={setBudget} 
         isValidBudget={isValidBudget} setIsValidBudget={setIsValidBudget}
+        spends={spends}
         />
       {isValidBudget && (
         <>
           <main>
-            <ListadoGastos spends={spends}/>
+            <ListadoGastos 
+              spends={spends} 
+              setEditSpend={setEditSpend}
+              deleteSpend={deleteSpend}
+            />
           </main>
           <div className="nuevo-gasto">
             <img 
@@ -61,6 +89,8 @@ function App() {
             modalAnimation={modalAnimation}
             setModalAnimation={setModalAnimation}
             saveSpend={saveSpend}
+            editSpend={editSpend}
+            setEditSpend={setEditSpend}
           />
       }
       

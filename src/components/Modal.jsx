@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Mensaje from './Mensaje';
 import CloseButton from '../img/cerrar.svg';
 
@@ -6,7 +6,9 @@ const Modal = ({
   setModal, 
   modalAnimation, 
   setModalAnimation, 
-  saveSpend 
+  saveSpend,
+  editSpend,
+  setEditSpend
 }) => {
 
   const [name, setName] = useState("");
@@ -15,8 +17,22 @@ const Modal = ({
 
   const [message, setMessage] = useState("");
 
+  const [id, setId] = useState("");
+  const [date, setDate] = useState("");
+
+  useEffect(() => {
+    if(Object.keys(editSpend).length > 0){
+      setName(editSpend.name);
+      setQuantity(editSpend.quantity);
+      setCategory(editSpend.category);
+      setId(editSpend.id);
+      setDate(editSpend.date);
+    }
+  }, []);
+
   const hiddeModal = () => {
     setModalAnimation(false);
+    setEditSpend({});
     setTimeout(() => {
       setModal(false);
     }, 300);
@@ -31,7 +47,7 @@ const Modal = ({
       return;
     }
 
-    saveSpend({name, quantity, category});
+    saveSpend({name, quantity, category, id, date});
   };
 
   return (
@@ -44,7 +60,7 @@ const Modal = ({
         className={`formulario ${modalAnimation ? 'animar' : 'cerrar'}`}
         onSubmit={handleSubmit}
       >
-        <legend>Nuevo Gasto</legend>
+        <legend>{editSpend.name ? "Editar Gasto" : "Nuevo Gasto"}</legend>
         {message && <Mensaje type="error">{message}</Mensaje>}
 
         <div className='campo'>
@@ -56,7 +72,8 @@ const Modal = ({
             value={name}
             onChange={e => setName(e.target.value)}
           />
-
+        </div>
+        <div className='campo'>
           <label htmlFor="cantidad">Cantidad</label>
           <input 
             id="cantidad"
@@ -65,7 +82,9 @@ const Modal = ({
             value={quantity}
             onChange={e => setQuantity(Number(e.target.value))}
           />
+        </div>
 
+        <div className='campo'>
           <label htmlFor="categoria">Categoría</label>
           <select 
             name="categoria" id="categoria"
@@ -81,10 +100,10 @@ const Modal = ({
             <option value="salud">Salud</option>
             <option value="suscripciones">Suscripciones</option>
           </select>
-          
-          <input type="submit" value="Añadir gasto"/>
-
         </div>
+          
+        <input type="submit" value={editSpend.name ? "Guardar Cambios" : "Añadir gasto"}/>
+
       </form>
     </div>
   )
