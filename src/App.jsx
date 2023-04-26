@@ -92,7 +92,7 @@ function App() {
       <Header 
         budget={budget} setBudget={setBudget} 
         isValidBudget={isValidBudget} setIsValidBudget={setIsValidBudget}
-        spends={spends}
+        spends={spends} setSpends={setSpends}
         />
       {isValidBudget && (
         <>

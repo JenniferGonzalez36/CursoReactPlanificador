@@ -3,7 +3,13 @@ import { useState, useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import "react-circular-progressbar/dist/styles.css";
 
-const ControlPresupuesto = ({ budget, spends }) => {
+const ControlPresupuesto = ({ 
+    budget, 
+    setBudget,
+    spends,
+    setSpends,
+    setIsValidBudget
+}) => {
 
     const [available, setAvailable] = useState(0);
     const [spent, setSpent] = useState(0);
@@ -29,24 +35,41 @@ const ControlPresupuesto = ({ budget, spends }) => {
         });
     }
 
+    const handleResetApp = () => {
+        const confirmation = confirm('¿Estás seguro de querer reiniciar el presupuesto y los gastos?');
+
+        if(confirmation){
+            setSpends([]);
+            setBudget(0);
+            setIsValidBudget(false);
+        }
+    }
+
     return (
         <div className='contenedor-presupuesto contenedor sombra dos-columnas'>
             <div>
                 <CircularProgressbar
                     styles={buildStyles({
-                        pathColor: "#3B82F6",
+                        pathColor: percentage > 100 ? "#dc2626" : "#3B82F6",
                         trailColor: "#F5F5F5",
-                        textColor: "#3B82F6"
+                        textColor: percentage > 100 ? "#dc2626" : "#3B82F6"
                     })}
                     value={percentage}
                     text={`${percentage}% Gastado`}
                 />
             </div>
             <div className='contenido-presupuesto'>
+                <button 
+                    className='reset-app' 
+                    type='button'
+                    onClick={handleResetApp}
+                >
+                    Resetear app
+                </button>
                 <p>
                     <span>Presupuesto: </span> {formatQuantity(budget)}
                 </p>
-                <p>
+                <p className={`${available < 0 ? 'negativo' : ''}`}>
                     <span>Disponible: </span> {formatQuantity(available)}
                 </p>
                 <p>
