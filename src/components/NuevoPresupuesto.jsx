@@ -8,7 +8,6 @@ function NuevoPresupuesto({ budget, setBudget, setIsValidBudget }) {
 
     const handleBudget = (e) => {
         e.preventDefault();
-
         if(!Number(budget) || Number(budget) < 0){
             setMessage("No es un presupuesto válido");
             return;
@@ -16,9 +15,7 @@ function NuevoPresupuesto({ budget, setBudget, setIsValidBudget }) {
         setMessage("");
         setBudget(Number(budget));
         setIsValidBudget(true);
-
     }
-
 
     return (
         <div className='contenedor-presupuesto contenedor sombra'>
@@ -27,7 +24,7 @@ function NuevoPresupuesto({ budget, setBudget, setIsValidBudget }) {
                     <label htmlFor="">Definir Presupuesto</label>
                     <input 
                         className='nuevo-presupuesto'
-                        type="text" placeholder='Añade tu Presupuesto' value={budget}
+                        type="text" placeholder='Añade tu Presupuesto'
                         onChange={(e) => setBudget(e.target.value)}
                     />
                 </div>

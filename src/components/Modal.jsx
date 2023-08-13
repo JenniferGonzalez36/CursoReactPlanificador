@@ -52,8 +52,8 @@ const Modal = ({
 
   return (
     <div className='modal'>
-      <div className='cerrar-modal'>
-        <img src={CloseButton} alt="Cerrar modal" onClick={hiddeModal}/>
+      <div className='cerrar-modal' onClick={hiddeModal}>
+        <img src={CloseButton} alt="Cerrar modal"/>
       </div>
       
       <form 
